@@ -1,0 +1,21 @@
+{
+  "name": "claude-job-hunter",
+  "owner": {
+    "name": "Omar Aly",
+    "url": "https://github.com/OmarKAly22"
+  },
+  "metadata": {
+    "description": "Honest, ATS-safe job hunting with Claude: profile setup, CV tailoring, verified daily job search, application tracking and interview prep.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "job-hunter",
+      "source": "./plugins/job-hunter",
+      "description": "Five skills that turn Claude into a careful job-search assistant. It never invents experience, never applies or sends email for you, and only shows jobs whose link it opened and saw live.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "keywords": ["jobs", "cv", "resume", "ats", "career", "interview"]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+node_modules/
+*.docx
+*.pdf
+!docs/*.pdf
+.DS_Store
+career-profile.md
+cv_base.json

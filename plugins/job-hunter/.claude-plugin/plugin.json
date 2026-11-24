@@ -1,0 +1,13 @@
+{
+  "name": "job-hunter",
+  "version": "0.1.0",
+  "description": "Honest, ATS-safe job hunting: profile setup, CV tailoring with a match score, browser-verified daily job search, application tracking and STAR interview prep.",
+  "author": {
+    "name": "Omar Aly",
+    "url": "https://github.com/OmarKAly22"
+  },
+  "homepage": "https://github.com/OmarKAly22/claude-job-hunter",
+  "repository": "https://github.com/OmarKAly22/claude-job-hunter",
+  "license": "MIT",
+  "keywords": ["jobs", "cv", "resume", "ats", "career", "interview"]
+}
