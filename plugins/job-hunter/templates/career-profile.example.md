@@ -19,6 +19,12 @@ The only source of facts for your CVs, match scores and messages. Claude never a
 - Available from / notice period: {{AVAILABILITY}}
 - Minimum match score to show a job: {{MIN_MATCH | default 70}}%
 - Leads per day: minimum {{DAILY_MIN | default 10}}, maximum {{DAILY_MAX | default none}}
+- Maximum posting age: {{MAX_AGE_DAYS | default 21}} days
+- Target employers (career pages checked first): {{EMPLOYERS}}
+- Sectors to include (e.g. public sector, defence, healthcare): {{SECTORS}}
+- Build a tailored CV for every new lead automatically: {{yes/no}}
+- Where job-search files live (leads.csv, seen.csv, runs.csv, CVs): {{FOLDER or PROJECT}}
+- Mark job emails as read after processing: {{yes/no}}
 
 ## Experience (newest first; one block per role, even at the same employer)
 ### {{TITLE}} | {{EMPLOYER}} | {{START}} – {{END}}
