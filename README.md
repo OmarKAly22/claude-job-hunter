@@ -108,7 +108,7 @@ python scripts/set_version.py free <X.Y.Z>     # updates versions, links and plu
 # add a "## Free <X.Y.Z> – <date>" section to CHANGELOG.md, open a PR, merge
 git tag free-v<X.Y.Z> && git push origin free-v<X.Y.Z>
 ```
-The release workflow builds the zips, the engine wheel and a release named "Job Hunter Free v<X.Y.Z> (Claude Free + local engine)". The old `v0.1.0` release is the Pro edition before the split.
+The release workflow builds the zips, the engine wheel and a release named "Job Hunter Free v<X.Y.Z> (Claude Free + local engine)". If a release run fails (for example on a GitHub API error), re-run it from **Actions → Release → Run workflow** with the tag name; it cleans up any leftover draft. The old `v0.1.0` release is the Pro edition before the split.
 
 ## Contributing
 Issues and pull requests are welcome: more ATS sources for the engine, more country job boards, ATS closed-page signs, translations of CV section labels. Change `shared/` or `editions/`, then run `python scripts/build_editions.py`.
