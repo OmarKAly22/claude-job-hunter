@@ -11,7 +11,7 @@ A Claude plugin for an honest, careful job search. It finds matching jobs, prove
 | **Claude Pro, Max, Team or Enterprise** | **Job Hunter Pro** | [job-hunter-pro-0.2.0.zip](https://github.com/OmarKAly22/claude-job-hunter/releases/download/pro-v0.2.0/job-hunter-pro-0.2.0.zip) · [release notes](https://github.com/OmarKAly22/claude-job-hunter/releases/tag/pro-v0.2.0) |
 | **Claude Free**, or you want job search to run on your own computer | **Job Hunter Free** | [job-hunter-free-0.2.0.zip](https://github.com/OmarKAly22/claude-job-hunter/releases/download/free-v0.2.0/job-hunter-free-0.2.0.zip) · [release notes](https://github.com/OmarKAly22/claude-job-hunter/releases/tag/free-v0.2.0) |
 
-All releases: [Pro](https://github.com/OmarKAly22/claude-job-hunter/releases?q=pro-v&expanded=true) · [Free](https://github.com/OmarKAly22/claude-job-hunter/releases?q=free-v&expanded=true)
+Older versions: [all releases](https://github.com/OmarKAly22/claude-job-hunter/releases). Pro releases are tagged `pro-vX.Y.Z`, Free releases `free-vX.Y.Z`.
 
 Both editions share the same profile setup, CV tailoring and interview prep. They differ in **how jobs are found, checked and tracked**:
 
