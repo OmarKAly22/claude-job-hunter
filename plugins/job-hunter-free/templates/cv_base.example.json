@@ -1,0 +1,48 @@
+{
+  "name": "Alex Example",
+  "headline": "Senior Data Engineer",
+  "contact": ["alex@example.com", "+00 000 0000000", "linkedin.com/in/alex-example", "Berlin, Germany"],
+  "contact2": ["github.com/alex-example"],
+  "summary": [
+    "Senior data engineer with 8 years of experience building cloud data platforms. Currently leading a team of 4 engineers and cutting manual reporting effort by around 30%.",
+    "Hands-on in Python, SQL and infrastructure as code; works directly with business teams to turn requirements into production pipelines."
+  ],
+  "skills": [
+    ["Programming", "Python, SQL, TypeScript"],
+    ["Cloud and infrastructure", "AWS (S3, Lambda, Glue), Terraform, Docker, CI/CD"],
+    ["Data", "Airflow, dbt, PostgreSQL, data modelling"],
+    ["Leadership", "Technical leadership, backlog ownership, stakeholder management"]
+  ],
+  "experience": [
+    {
+      "title": "Lead Data Engineer",
+      "company": "Example GmbH",
+      "dates": "Jan 2023 – Present",
+      "sub": "Retail analytics platform",
+      "bullets": [
+        "Cut manual reporting effort by around 30% by automating 12 recurring reports.",
+        "Lead a team of 4 engineers; own the backlog and quarterly roadmap.",
+        "Moved batch pipelines to Airflow on AWS, reducing failed runs to under 1 per month."
+      ]
+    },
+    {
+      "title": "Data Engineer",
+      "company": "Example GmbH",
+      "dates": "Mar 2020 – Dec 2022",
+      "bullets": [
+        "Built the company's first data warehouse on PostgreSQL, used by 40+ analysts."
+      ]
+    }
+  ],
+  "projects": [
+    "Open-source dbt package for retail KPIs (github.com/alex-example/retail-kpis)."
+  ],
+  "education": [
+    ["M.Sc. Computer Science | Example University", "2016 – 2018", "Focus: databases and distributed systems"]
+  ],
+  "certs": [
+    "AWS Certified Data Engineer – Associate (2024)"
+  ],
+  "languages": "English C2, German B2",
+  "labels": {}
+}

@@ -1,0 +1,78 @@
+# Job Hunter engine configuration.
+# The Free edition's `setup-engine` skill can fill this in from your career-profile.md.
+# Check it with:  job-hunter doctor --config <this file>
+
+[output]
+# Where the engine writes leads-*.json, inbox-*.json, state.json and logs.
+folder = "~/JobHunter"
+
+[search]
+# A job matches when its title contains one of these titles (word order and case ignored)...
+titles = ["Data Engineer", "Machine Learning Engineer"]
+# ...or contains one of these single keywords.
+extra_keywords = []
+# Titles with any of these words are dropped.
+exclude_title_words = ["junior", "intern", "internship", "werkstudent", "working student", "praktikum", "praktikant", "trainee", "ausbildung", "student"]
+# A job matches when its location contains one of these (case ignored). Empty = any location.
+locations = ["Germany", "Deutschland", "Remote"]
+# Jobs whose location contains one of these are dropped.
+exclude_locations = []
+# Employers never shown (your current employer, its group, others).
+exclude_employers = []
+# Drop postings older than this many days (when the source gives a date).
+max_age_days = 21
+# Stop after this many new verified jobs in one run.
+max_new_per_run = 60
+
+[verify]
+# true = open every job page in a hidden Chromium window (needs: job-hunter setup-browser).
+# false = trust the employer's live ATS listing only.
+browser = true
+timeout_seconds = 25
+
+# Employers to check through their public job-board API.
+# ats: greenhouse | lever | ashby | smartrecruiters | personio | recruitee | workday
+# slug: the board name in the employer's careers URL, e.g. boards.greenhouse.io/<slug>,
+#       jobs.lever.co/<slug>, jobs.ashbyhq.com/<slug>, <slug>.jobs.personio.de, <slug>.recruitee.com
+# workday uses board_url instead, e.g. "https://acme.wd3.myworkdayjobs.com/en-US/External"
+# lever: add region = "eu" for boards on jobs.eu.lever.co
+# personio: add domain = "jobs.personio.com" if the board is not on jobs.personio.de
+
+[[employers]]
+name = "Example GmbH"
+ats = "greenhouse"
+slug = "example"
+
+# [[employers]]
+# name = "Acme"
+# ats = "workday"
+# board_url = "https://acme.wd3.myworkdayjobs.com/en-US/External"
+
+# Bundesagentur für Arbeit job search (Germany). Uses search.titles as queries.
+[arbeitsagentur]
+enabled = false
+where = "Köln"
+radius_km = 50
+
+# Read job emails (confirmations, rejections, interviews) over IMAP. Read-only: nothing is changed.
+# Gmail: imap.gmail.com with an app password (Google account > Security > App passwords).
+[inbox]
+enabled = false
+host = "imap.gmail.com"
+port = 993
+user = "you@example.com"
+folder = "INBOX"
+days = 8
+# The password is read from this environment variable, or from your OS keychain after:
+#   job-hunter set-password inbox
+password_env = "JOB_HUNTER_IMAP_PASSWORD"
+
+[notify]
+# Desktop notification after each run.
+desktop = true
+# Optional email to yourself after each run (leave empty to skip).
+email_to = ""
+smtp_host = "smtp.gmail.com"
+smtp_port = 587
+smtp_user = ""
+password_env = "JOB_HUNTER_SMTP_PASSWORD"

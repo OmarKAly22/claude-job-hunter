@@ -1,0 +1,6 @@
+{
+  "name": "job-hunter-scripts",
+  "private": true,
+  "description": "Dependencies for the ATS CV generator",
+  "dependencies": { "docx": "^9.0.0" }
+}

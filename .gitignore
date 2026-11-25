@@ -5,3 +5,9 @@ node_modules/
 .DS_Store
 career-profile.md
 cv_base.json
+dist/
+*.egg-info/
+.venv/
+__pycache__/
+.pytest_cache/
+config.toml

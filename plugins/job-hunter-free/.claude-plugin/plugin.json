@@ -1,0 +1,13 @@
+{
+  "name": "job-hunter-free",
+  "version": "0.2.0",
+  "description": "Job Hunter Free edition, for the Claude Free plan. The same honest, ATS-safe CV tailoring, profile setup and interview prep, with job finding, link checking, inbox reading and scheduling done by a small open-source engine on your own computer instead of paid Claude features.",
+  "author": {
+    "name": "Omar Aly",
+    "url": "https://github.com/OmarKAly22"
+  },
+  "homepage": "https://github.com/OmarKAly22/claude-job-hunter",
+  "repository": "https://github.com/OmarKAly22/claude-job-hunter",
+  "license": "MIT",
+  "keywords": ["jobs", "cv", "resume", "ats", "career", "interview", "free", "local"]
+}
