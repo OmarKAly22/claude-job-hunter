@@ -1,0 +1,92 @@
+name: Release
+
+# Push a tag to publish one edition:
+#   pro-v0.2.0   -> "Job Hunter Pro v0.2.0 (Claude Pro, Max, Team, Enterprise)"
+#   free-v0.2.0  -> "Job Hunter Free v0.2.0 (Claude Free + local engine)"
+on:
+  push:
+    tags:
+      - "pro-v*"
+      - "free-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read edition and version from the tag
+        id: tag
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          EDITION="${TAG%%-v*}"
+          VERSION="${TAG#*-v}"
+          PLUGIN_VERSION=$(python -c "import json;print(json.load(open('editions/${EDITION}/plugin.json'))['version'])")
+          if [ "$VERSION" != "$PLUGIN_VERSION" ]; then
+            echo "::error::Tag $TAG does not match editions/${EDITION}/plugin.json version $PLUGIN_VERSION. Run: python scripts/set_version.py ${EDITION} ${VERSION}"
+            exit 1
+          fi
+          if [ "$EDITION" = "pro" ]; then
+            TITLE="Job Hunter Pro v${VERSION} (Claude Pro, Max, Team, Enterprise)"
+          else
+            TITLE="Job Hunter Free v${VERSION} (Claude Free + local engine)"
+          fi
+          echo "edition=$EDITION" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+
+      - name: Check the repository
+        run: |
+          python scripts/build_editions.py --check
+          python scripts/set_version.py --check
+
+      - name: Test and build the engine (Free edition)
+        if: steps.tag.outputs.edition == 'free'
+        run: |
+          pip install build
+          pip install -e "engine[dev,mcp]"
+          pytest -q engine
+          python -m build engine --outdir dist
+
+      - name: Build the plugin and skills zips
+        run: python scripts/build_editions.py --zip "${{ steps.tag.outputs.edition }}"
+
+      - name: Release notes from CHANGELOG.md
+        run: |
+          EDITION="${{ steps.tag.outputs.edition }}"
+          HEADING="## ${EDITION^} ${{ steps.tag.outputs.version }}"
+          awk -v h="$HEADING" 'index($0, h)==1 {on=1; next} /^## / && on {exit} on' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::CHANGELOG.md has no section starting with '$HEADING'"
+            exit 1
+          fi
+          {
+            echo
+            echo "---"
+            if [ "$EDITION" = "pro" ]; then
+              echo "**For Claude Pro, Max, Team and Enterprise.** On the Free plan, use the latest Job Hunter Free release instead."
+              echo
+              echo "Install: download \`job-hunter-pro-${{ steps.tag.outputs.version }}.zip\`, then in Claude open **Customize → Plugins → Add → Upload plugin**."
+            else
+              echo "**For the Claude Free plan.** Needs the local engine on your computer (Python 3.11+)."
+              echo
+              echo "1. Download \`job-hunter-free-${{ steps.tag.outputs.version }}.zip\` and upload it in Claude under **Customize → Plugins**. If your account cannot upload plugins, upload the skills from \`job-hunter-free-skills-${{ steps.tag.outputs.version }}.zip\` one by one under **Customize → Skills**."
+              echo "2. Install the engine: \`pipx install \"job-hunter-engine[all] @ git+https://github.com/${{ github.repository }}@${GITHUB_REF_NAME}#subdirectory=engine\"\`"
+              echo "3. In Claude, say: **Set up my job hunter engine**."
+            fi
+          } >> notes.md
+          cat notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "${{ steps.tag.outputs.title }}" \
+            --notes-file notes.md

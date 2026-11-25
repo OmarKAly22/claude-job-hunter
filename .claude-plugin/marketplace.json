@@ -5,17 +5,25 @@
     "url": "https://github.com/OmarKAly22"
   },
   "metadata": {
-    "description": "Honest, ATS-safe job hunting with Claude: profile setup, CV tailoring, verified daily job search, application tracking and interview prep.",
-    "version": "0.1.0"
+    "description": "Honest, ATS-safe job hunting with Claude in two editions: Pro (Claude Pro, Max, Team, Enterprise) and Free (Claude Free plus a local open-source engine).",
+    "version": "0.2.0"
   },
   "plugins": [
     {
-      "name": "job-hunter",
-      "source": "./plugins/job-hunter",
-      "description": "Five skills that turn Claude into a careful job-search assistant. It never invents experience, never applies or sends email for you, and only shows jobs whose link it opened and saw live.",
-      "version": "0.1.0",
+      "name": "job-hunter-pro",
+      "source": "./plugins/job-hunter-pro",
+      "description": "Pro edition, for Claude Pro, Max, Team and Enterprise. Verifies every job link in a real browser (Claude in Chrome or the desktop app's built-in browser), tracks applications from Gmail and runs as scheduled tasks.",
+      "version": "0.2.0",
       "license": "MIT",
-      "keywords": ["jobs", "cv", "resume", "ats", "career", "interview"]
+      "keywords": ["jobs", "cv", "resume", "ats", "career", "interview", "pro"]
+    },
+    {
+      "name": "job-hunter-free",
+      "source": "./plugins/job-hunter-free",
+      "description": "Free edition, for the Claude Free plan. A small open-source engine on your own computer finds jobs through public ATS APIs, checks links with a headless browser, reads your inbox over IMAP and runs on your computer's own scheduler.",
+      "version": "0.2.0",
+      "license": "MIT",
+      "keywords": ["jobs", "cv", "resume", "ats", "career", "interview", "free", "local"]
     }
   ]
 }

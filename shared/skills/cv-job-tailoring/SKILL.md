@@ -11,7 +11,8 @@ Use this whenever the user shares a job posting (link, pasted text or file) and 
 
 ## 1. Get the full posting
 - Pasted text or a file: read it directly.
-- Normal pages: fetch them. JavaScript job boards (Greenhouse, Ashby, Workday, Eightfold) often come back empty: open them in a browser and read the page text.
+- Normal pages: fetch them. JavaScript job boards (Greenhouse, Ashby, Workday, Eightfold) often come back empty: open them in a browser and read the page text, or, without a browser, ask the user to paste the posting text.
+- A job from the local engine's leads file (Free edition) already carries its full description: use it.
 - LinkedIn search URLs show whichever job is selected; open `https://www.linkedin.com/jobs/view/<jobId>/` instead.
 - Confirm the posting you read is the one the user meant.
 
@@ -19,7 +20,9 @@ Use this whenever the user shares a job posting (link, pasted text or file) and 
 - Open the exact URL in a real browser and read the final URL, page title and first lines. It must show that single job with the same title.
 - A fetch or search result is NOT proof; it can return an old cached copy of a closed job.
 - Dead signs: 404, "job not found", "no longer available", "position filled", "expired", "nicht mehr verfügbar", "Bereits vergeben", a redirect to a job list or careers home page, a different job title.
-- If no browser is available, say the link is unconfirmed instead of calling it live.
+- Without a browser in Claude, the local Job Hunter engine can check it: call its `verify_job_links` tool if it is connected, or ask the user to run `job-hunter verify <url>` and paste the result.
+- A job from the engine's leads file counts as live when its `link_checked` is today or yesterday (its `verification` and `link_proof` say how).
+- If neither a browser nor the engine is available, say the link is unconfirmed instead of calling it live, and ask the user to open it before applying.
 
 ## 3. Match score (always first, before building anything)
 1. List every requirement and label it must-have or nice-to-have.

@@ -1,0 +1,13 @@
+{
+  "name": "job-hunter-pro",
+  "version": "0.2.0",
+  "description": "Job Hunter Pro edition, for Claude Pro, Max, Team and Enterprise. Honest, ATS-safe job hunting: profile setup, CV tailoring with a match score, browser-verified daily job search (Claude in Chrome or the desktop app's built-in browser), application tracking from Gmail, scheduled tasks and STAR interview prep.",
+  "author": {
+    "name": "Omar Aly",
+    "url": "https://github.com/OmarKAly22"
+  },
+  "homepage": "https://github.com/OmarKAly22/claude-job-hunter",
+  "repository": "https://github.com/OmarKAly22/claude-job-hunter",
+  "license": "MIT",
+  "keywords": ["jobs", "cv", "resume", "ats", "career", "interview", "pro"]
+}

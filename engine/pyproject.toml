@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "job-hunter-engine"
+version = "0.2.0"
+description = "Local engine for the Job Hunter Free edition: finds jobs through public ATS APIs, checks links in a headless browser, reads job emails over IMAP and runs on your computer's own scheduler."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Omar Aly" }]
+dependencies = []
+
+[project.optional-dependencies]
+browser = ["playwright>=1.40"]
+mcp = ["mcp>=1.2"]
+keyring = ["keyring>=24"]
+all = ["playwright>=1.40", "mcp>=1.2", "keyring>=24"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+job-hunter = "job_hunter_engine.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/OmarKAly22/claude-job-hunter"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+job_hunter_engine = ["config.example.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
