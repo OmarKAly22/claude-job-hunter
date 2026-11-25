@@ -3,20 +3,43 @@ name: Release
 # Push a tag to publish one edition:
 #   pro-v0.2.0   -> "Job Hunter Pro v0.2.0 (Claude Pro, Max, Team, Enterprise)"
 #   free-v0.2.0  -> "Job Hunter Free v0.2.0 (Claude Free + local engine)"
+#
+# To retry or redo a release for an existing tag (uses this file from main, builds the tagged code):
+#   Actions -> Release -> Run workflow -> tag: pro-v0.2.0
 on:
   push:
     tags:
       - "pro-v*"
       - "free-v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release, e.g. pro-v0.2.0 or free-v0.2.0"
+        required: true
 
 permissions:
   contents: write
 
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
     steps:
+      - name: Check the tag name
+        run: |
+          if ! [[ "$RELEASE_TAG" =~ ^(pro|free)-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::'$RELEASE_TAG' is not a release tag like pro-v0.2.0 or free-v0.2.0"
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -24,7 +47,7 @@ jobs:
       - name: Read edition and version from the tag
         id: tag
         run: |
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${RELEASE_TAG}"
           EDITION="${TAG%%-v*}"
           VERSION="${TAG#*-v}"
           PLUGIN_VERSION=$(python -c "import json;print(json.load(open('editions/${EDITION}/plugin.json'))['version'])")
@@ -77,16 +100,55 @@ jobs:
               echo "**For the Claude Free plan.** Needs the local engine on your computer (Python 3.11+)."
               echo
               echo "1. Download \`job-hunter-free-${{ steps.tag.outputs.version }}.zip\` and upload it in Claude under **Customize → Plugins**. If your account cannot upload plugins, upload the skills from \`job-hunter-free-skills-${{ steps.tag.outputs.version }}.zip\` one by one under **Customize → Skills**."
-              echo "2. Install the engine: \`pipx install \"job-hunter-engine[all] @ git+https://github.com/${{ github.repository }}@${GITHUB_REF_NAME}#subdirectory=engine\"\`"
+              echo "2. Install the engine: \`pipx install \"job-hunter-engine[all] @ git+https://github.com/${{ github.repository }}@${RELEASE_TAG}#subdirectory=engine\"\`"
               echo "3. In Claude, say: **Set up my job hunter engine**."
             fi
           } >> notes.md
           cat notes.md
 
-      - name: Publish the release
+      - name: Publish the release (retries GitHub API errors, replaces leftover drafts)
         env:
           GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ steps.tag.outputs.title }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/* \
-            --title "${{ steps.tag.outputs.title }}" \
-            --notes-file notes.md
+          set -u
+          retry() {
+            local n=1
+            until "$@"; do
+              if [ "$n" -ge 5 ]; then echo "::error::Gave up after $n attempts: $*"; return 1; fi
+              echo "::warning::Attempt $n failed: $* (retrying in $((n * 20))s)"
+              sleep $((n * 20)); n=$((n + 1))
+            done
+          }
+          releases_for_tag() {  # prints "<id> <draft>" for every release (drafts included) on this tag
+            gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+              --jq ".[] | select(.tag_name == \"${RELEASE_TAG}\") | \"\(.id) \(.draft)\""
+          }
+
+          # 1. Remove drafts left behind by an earlier failed run.
+          retry releases_for_tag > existing.txt
+          while read -r id draft; do
+            if [ "$draft" = "true" ]; then
+              echo "Deleting leftover draft release $id"
+              retry gh api -X DELETE "repos/${GITHUB_REPOSITORY}/releases/$id"
+            fi
+          done < existing.txt
+
+          # 2. Create the release as a draft (or reuse the published one), so a half-finished
+          #    upload is never visible to users.
+          if grep -q " false$" existing.txt; then
+            echo "Release ${RELEASE_TAG} is already published; updating its title, notes and files."
+            retry gh release edit "$RELEASE_TAG" --title "$TITLE" --notes-file notes.md
+          else
+            retry gh release create "$RELEASE_TAG" --draft --verify-tag --title "$TITLE" --notes-file notes.md
+          fi
+
+          # 3. Upload every file; --clobber replaces a file a failed attempt already uploaded.
+          for f in dist/*; do
+            [ -f "$f" ] || continue
+            retry gh release upload "$RELEASE_TAG" "$f" --clobber
+          done
+
+          # 4. Publish.
+          retry gh release edit "$RELEASE_TAG" --draft=false
+          gh release view "$RELEASE_TAG" --json name,url,assets --jq '"\(.name)\n\(.url)\n" + ([.assets[].name] | join("\n"))'
